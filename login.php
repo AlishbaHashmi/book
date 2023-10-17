@@ -2,37 +2,24 @@
   <?php
   include('header.php');
   include ('topbar.php');
+  include('config.php');
 
 
-  if(isset($_POST['register'])){
-    $fname = $_POST['FirstName'];
-    $lname = $_POST['LastName'];
-    $email = $_POST['email'];
-    $Password = $_POST['password'];
-    $RPassword = $_POST['repeatPassword'];
-
-    if($Password == $RPassword){
-    $hashPass = password_hash($Password, PASSWORD_BCRYPT);
-
-        $check_email = "SELECT * from user where email = '$email' ";
-        $run_email = mysqli_query($connection, $check_email);
-        if(mysqli_num_rows($run_email) > 0){
-            echo "Email already exist";
-        }else{
-            $insert = "INSERT INTO `user` (`fname`, `lname`, `email`, `pass`) VALUES ('$fname', '$lname', '$email','$hashPass')";
-        $connect_insert = mysqli_query($connection, $insert);
-        if($connect_insert){
-            echo "<script>alert('registration successful');</script>";
-        }else{
-            echo "registration failed";
-        }
-        
-        }
-    }else{
-        echo "Password not matched";
+  if(isset($_POST['login'])){
+    $log_email = $_POST['email'];
+    $log_password = $_POST['password'];
+  
+    $verify = "SELECT * from `users` where email='$log_email'";
+    $connect_login = mysqli_query($connection , $verify );
+  
+    if(mysqli_num_rows($connect_login) > 0){
+      $row = mysqli_fetch_assoc($connect_login);
+      $db_pass=  $row['password'];
+      $pass_decode = password_verify($log_password, $db_pass);
+      
     }
-
-}
+  
+  }
 
 
   ?>

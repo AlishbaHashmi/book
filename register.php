@@ -1,6 +1,37 @@
 <?php
   include('header.php');
   include ('topbar.php');
+  include('config.php');
+
+  if(isset($_POST['register'])){
+    $fname = $_POST['FirstName'];
+    $lname = $_POST['LastName'];
+    $email = $_POST['email'];
+    $Password = $_POST['password'];
+    $RPassword = $_POST['repeatPassword'];
+
+    if($Password == $RPassword){
+    $hashPass = password_hash($Password, PASSWORD_BCRYPT);
+
+        $check_email = "SELECT * from `users` where email='$email'";
+        $run_email = mysqli_query($connection, $check_email);
+        if(mysqli_num_rows($run_email) > 0){
+            echo "Email already exist";
+        }else{
+            $insert = "INSERT INTO `users` (`firstname`, `lastname`, `email`, `password`) VALUES ('$fname', '$lname', '$email','$hashPass')";
+        $connect_insert = mysqli_query($connection, $insert);
+        if($connect_insert){
+            echo "<script>alert('registration successful');</script>";
+        }else{
+            echo "registration failed";
+        }
+        
+        }
+    }else{
+        echo "Password not matched";
+    }
+
+}
   ?>
 
   <br>
